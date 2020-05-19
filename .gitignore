@@ -1,0 +1,6 @@
+book
+dist/
+doc/build/
+__pycache__/
+.idea/
+*.iml
