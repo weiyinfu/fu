@@ -7,12 +7,18 @@
 Welcome to fu's documentation!
 ==============================
 
+`查看源码 <https://github.com/weiyinfu/fu>`_
+
+.. automodule:: fu
+    :modules:
+
 .. toctree::
    :maxdepth: 2
    :caption: 目录
    :glob:
 
    modules/*
+
 
 索引和API
 ==================

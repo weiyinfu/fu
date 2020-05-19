@@ -16,18 +16,21 @@
 
 
 # -- Project information -----------------------------------------------------
+import sys
+from os.path import *
 
+sys.path.insert(0, abspath(join(dirname(__file__), '../..')))
+import fu
 project = 'fu'
 copyright = '2020, weiyinfu'
 author = 'weiyinfu'
-
 
 # -- General configuration ---------------------------------------------------
 
 # Add any Sphinx extension module names here, as strings. They can be
 # extensions coming with Sphinx (named 'sphinx.ext.*') or your custom
 # ones.
-extensions = ['recommonmark','sphinx.ext.autodoc']
+extensions = ['recommonmark', 'sphinx.ext.autodoc']
 
 # Add any paths that contain templates here, relative to this directory.
 templates_path = ['_templates']
@@ -43,7 +46,6 @@ language = 'zh'
 # directories to ignore when looking for source files.
 # This pattern also affects html_static_path and html_extra_path.
 exclude_patterns = []
-
 
 # -- Options for HTML output -------------------------------------------------
 

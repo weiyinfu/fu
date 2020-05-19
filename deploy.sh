@@ -1,0 +1,1 @@
+rsync --progress -r doc/build  tencent:/home/ubuntu/app/fu
