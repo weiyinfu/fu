@@ -1,6 +1,6 @@
 import sqlite3
 import re
-from typing import List, Tuple
+from typing import List, Tuple, Iterable
 from fu import dict_obj
 
 """
@@ -33,28 +33,32 @@ def to_json(cursor: sqlite3.Cursor, row: List[Tuple], obj_type: type = dict):
     return a
 
 
-def select_json(conn: sqlite3.Connection, sql: str):
-    cursor = conn.execute(sql)
-    return [to_json(cursor, i) for i in cursor.fetchall()]
-
-
-def select_obj(conn: sqlite3.Connection, sql: str):
-    cursor = conn.execute(sql)
+def select_list(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
+    assert isinstance(args, Iterable)
+    cursor = conn.execute(sql, args)
     return [to_json(cursor, i, obj_type=dict_obj.DictObj) for i in cursor.fetchall()]
 
 
-def select_one_value(conn: sqlite3.Connection, sql: str):
+def select_one(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
+    li = select_list(conn, sql, args)
+    if len(li) != 1:
+        raise Exception(f"{sql} return result length error :len={len(li)}")
+    return li[0]
+
+
+def select_value(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
     """
     选择的返回值只有一列，例如select count(1) from ..
+    :param args:
     :param conn:
     :param sql:
     :return:
     """
-    cursor = conn.execute(sql)
+    cursor = conn.execute(sql, args)
     obj = cursor.fetchone()
     if len(obj) != 1:
         raise Exception(f"multi column found {obj}")
-    return cursor.fetchone()[0]
+    return obj[0]
 
 
 def insert_one(conn: sqlite3.Connection, table: str, obj: dict_obj.DictObj, fields: List[str]) -> int:
@@ -102,11 +106,8 @@ class Database:
     def __init__(self, dbfile: str):
         self.conn = get_conn(dbfile)
 
-    def select_json(self, sql: str):
-        return select_json(self.conn, sql)
-
-    def select_obj(self, sql: str):
-        return select_obj(self.conn, sql)
+    def select_obj(self, sql: str, args: Iterable = tuple()):
+        return select_list(self.conn, sql, args)
 
     def exist_table(self, table_name: str):
         return exist_table(self.conn, table_name)
