@@ -33,7 +33,13 @@ import sys
 import xml.etree.cElementTree as ET
 from collections import OrderedDict
 
+"""
+在线xml和json互转
+* http://www.gaituba.com/xmljson/
+* http://www.bejson.com/xml2json/
 
+xml2json:github：https://github.com/hay/xml2json/
+"""
 class DefaultOption:
     def __init__(self):
         self.pretty = False

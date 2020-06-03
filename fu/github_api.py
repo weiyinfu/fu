@@ -1,22 +1,23 @@
 import requests
-
-from know import config
-
-sess = requests.Session()
-# auth的方式已经不鼓励使用了
-sess.headers['Authorization'] = f"token {config.github_token}"
-sess.headers['Accept'] = 'application/vnd.github.v3+json'
-sess.headers['User-Agent'] = 'Awesome-Octocat-App'
-current_user_url = 'https://api.github.com/user'
-repos_url = 'https://api.github.com/user/repos'
+from typing import List
 
 need_fields = 'archived created_at description forks forks_count language name private pushed_at size stargazers_count  updated_at  '.split()
 
 
-def get_repos():
+def get_repos(github_token: str) -> List[dict]:
     """
     github的页码是从1开始的
+
+    :param github_token: github的token
+    :return: repo列表，list[dict]
     """
+    sess = requests.Session()
+    # auth的方式已经不鼓励使用了
+    sess.headers['Authorization'] = f"token {github_token}"
+    sess.headers['Accept'] = 'application/vnd.github.v3+json'
+    sess.headers['User-Agent'] = 'Awesome-Octocat-App'
+    current_user_url = 'https://api.github.com/user'
+    repos_url = 'https://api.github.com/user/repos'
     user = sess.get(current_user_url).json()
     repo_count = user['total_private_repos'] + user['public_repos']
     a = []

@@ -12,11 +12,12 @@ class SqliteCache:
 
     def __init__(self, filepath: str):
         self.conn = d.get_conn(filepath)
-        d.init_structure(self.conn, "CREATE TABLE  kv (key VARCHAR(128) PRIMARY KEY ,value longtext)")
+        if not d.exist_table(self.conn, 'kv'):
+            d.init_structure(self.conn, "CREATE TABLE  kv (key VARCHAR(128) PRIMARY KEY ,value longtext)")
 
     def query(self, k, type_=str):
         res = self.conn.execute("SELECT value FROM kv WHERE key =?", (k,)).fetchone()
-        if not res:
+        if res is None:
             return None
         else:
             return type_(res[0])
@@ -27,10 +28,13 @@ class SqliteCache:
 
     def put(self, k, v):
         old_value = self.query(k)
-        if not old_value:
+        if old_value is None:
             sql = "INSERT INTO kv VALUES (?,?)"
             self.conn.execute(sql, (k, v))
         else:
             sql = "UPDATE kv SET VALUE =? WHERE key=?"
             self.conn.execute(sql, (v, k))
         self.conn.commit()
+
+    def get_all(self):
+        return d.select_list(self.conn, 'select * from kv')

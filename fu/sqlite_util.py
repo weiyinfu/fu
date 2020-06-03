@@ -13,6 +13,13 @@ def get_conn(db_path: str):
 
 
 def exist_table(conn: sqlite3.Connection, table_name: str):
+    """
+    判断数据库表是否存在
+
+    :param conn: 数据库连接
+    :param table_name: 表名
+    :return: bool值，表示数据库是否存在
+    """
     res = conn.execute(f"SELECT * FROM sqlite_master WHERE tbl_name='{table_name}'")
     return res.fetchone() is not None
 
@@ -40,6 +47,14 @@ def select_list(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
 
 
 def select_one(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
+    """
+    从数据库中选择一条数据，如果实际数据不是一条，会报错
+
+    :param conn:
+    :param sql:
+    :param args:
+    :return:
+    """
     li = select_list(conn, sql, args)
     if len(li) != 1:
         raise Exception(f"{sql} return result length error :len={len(li)}")
@@ -49,6 +64,7 @@ def select_one(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
 def select_value(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
     """
     选择的返回值只有一列，例如select count(1) from ..
+
     :param args:
     :param conn:
     :param sql:
@@ -64,11 +80,12 @@ def select_value(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
 def insert_one(conn: sqlite3.Connection, table: str, obj: dict_obj.DictObj, fields: List[str]) -> int:
     """
     向数据库中插入一条数据
+
     :param obj:
     :param table:
     :param fields:
     :param conn:
-    :return:row_count
+    :return: row_count
     """
     field_list = ','.join(fields)
     quote_list = ','.join('?' * len(fields))
@@ -83,6 +100,7 @@ def insert_many(conn: sqlite3.Connection, table: str,
                 fields: List[str] = None):
     """
     批量插入数据
+
     :param obj_list:
     :param conn:
     :param table:

@@ -9,6 +9,11 @@ functools中的缓存不支持强制刷新，自己实现一个支持强制刷�
 
 
 def simple_cache(timeout=None):
+    """
+    简单cache装饰器
+    :param timeout:超时时间
+    :return:
+    """
     def decorator(f):
         def ff(*args, **kwargs):
             key = get_key(*args, **kwargs)

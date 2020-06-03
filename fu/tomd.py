@@ -3,6 +3,10 @@ from pyquery import PyQuery as pq
 __all__ = ["Tomd", "convert"]
 """
 html转markdown
+
+
+html2markdown:https://github.com/dlon/html2markdown
+tomd:https://github.com/gaojiuli/tomd ,another markdown2html converter
 """
 MARKDOWN = {
     "h1": "#",

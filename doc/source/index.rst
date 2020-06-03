@@ -10,7 +10,8 @@ Welcome to fu's documentation!
 `查看源码 <https://github.com/weiyinfu/fu>`_
 
 .. automodule:: fu
-    :modules:
+   :members:
+   :undoc-members:
 
 .. toctree::
    :maxdepth: 2
