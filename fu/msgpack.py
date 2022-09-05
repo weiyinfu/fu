@@ -15,7 +15,6 @@ def dump(data: object, path: str):
         msgpack.dump(data, path)
         return
     with open(path, "wb") as f:
-        kwargs['ensure_ascii'] = False
         msgpack.dump(data, f)
 
 

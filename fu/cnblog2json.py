@@ -1,7 +1,7 @@
 import json
 import os
 
-from tqdm import tqdm
+from tqdm.autonotebook import tqdm
 from fu import json
 from fu import xml2json
 

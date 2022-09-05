@@ -113,9 +113,7 @@ def main():
         if os.path.exists(target_name):
             print(f"{target_name} already exits !")
             exit(-1)
-        json.dump(
-            node, open(target_name, "w", encoding="utf8"), ensure_ascii=0, indent=2
-        )
+        json.dump(node, open(target_name, "w", encoding="utf8"), ensure_ascii=False, indent=2)
     else:
         print(f"{filename} must be one of .json or .html")
         exit(-1)

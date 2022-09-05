@@ -1,7 +1,19 @@
 import requests
 from typing import List
+import subprocess as sp
 
 need_fields = 'archived created_at description forks forks_count language name private pushed_at size stargazers_count  updated_at  '.split()
+
+
+def get_branches(folder: str):
+    x = sp.check_output("git branch", shell=True, cwd=folder)
+    x = str(x, encoding='utf8')
+    a = x.splitlines()
+    return [x.strip().strip('*').strip() for x in a]
+
+
+def get_current_branch(folder: str):
+    return get_branches(folder)[0]
 
 
 def get_repos(github_token: str) -> List[dict]:

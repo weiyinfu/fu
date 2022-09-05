@@ -1,6 +1,7 @@
-import sqlite3
 import re
-from typing import List, Tuple, Iterable
+import sqlite3
+from typing import List, Tuple, Iterable, Union, Any, Dict
+
 from fu import dict_obj
 
 """
@@ -77,7 +78,7 @@ def select_value(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
     return obj[0]
 
 
-def insert_one(conn: sqlite3.Connection, table: str, obj: dict_obj.DictObj, fields: List[str]) -> int:
+def insert_one(conn: sqlite3.Connection, table: str, obj: Union[object, Dict[str, Any]], fields: List[str]) -> int:
     """
     向数据库中插入一条数据
 
@@ -89,14 +90,36 @@ def insert_one(conn: sqlite3.Connection, table: str, obj: dict_obj.DictObj, fiel
     """
     field_list = ','.join(fields)
     quote_list = ','.join('?' * len(fields))
-    values = [getattr(obj, i) for i in fields]
+    get = getattr
+    if type(obj) == dict:
+        get = lambda x, k: x[k]
+    values = [get(obj, i) for i in fields]
     res = conn.execute(f"insert into {table} ({field_list}) values ({quote_list})", values)
     conn.commit()
     return res.rowcount
 
 
+def update(conn: sqlite3.Connection, table: str, obj: Union[object, Dict[str, Any]], update_fields: List[str], filter_fields: List[str]):
+    if len(filter_fields) == 0:
+        raise Exception(f"filter fields = 0 ")
+    if len(update_fields) == 0:
+        raise Exception(f"update fields = 0")
+    set_list = [f'{k}=?' for k in update_fields]
+    set_str = ','.join(set_list)
+    where_list = [f"{k}=?" for k in filter_fields]
+    where_str = ' and '.join(where_list)
+    get = getattr
+    if type(obj) == dict:
+        get = lambda x, k: x[k]
+    values = [get(obj, i) for i in update_fields + filter_fields]
+    sql = f"update {table} set {set_str} where {where_str}"
+    res = conn.execute(sql, values)
+    conn.commit()
+    return res.rowcount
+
+
 def insert_many(conn: sqlite3.Connection, table: str,
-                obj_list: List[dict_obj.DictObj],
+                obj_list: List[Union[object, Dict[str, Any]]],
                 fields: List[str] = None):
     """
     批量插入数据
@@ -110,7 +133,13 @@ def insert_many(conn: sqlite3.Connection, table: str,
     field_list = ','.join(fields)
     quote_list = ','.join('?' * len(fields))
     sql = f"insert into {table} ({field_list}) values ({quote_list})"
-    batch_data = [[getattr(obj, i) for i in fields] for obj in obj_list]
+
+    def get(obj, i):
+        if type(obj_list[0]) == dict:
+            return obj[i]
+        return getattr(obj, i)
+
+    batch_data = [[get(obj, i) for i in fields] for obj in obj_list]
     res = conn.executemany(sql, batch_data)
     conn.commit()
     return res.rowcount
@@ -138,3 +167,7 @@ class Database:
 
     def insert_batch(self, table: str, obj_list: List[dict_obj.DictObj], fields: List[str]) -> int:
         return insert_many(self.conn, table, obj_list, fields)
+
+
+if __name__ == '__main__':
+    update(None, "one", {'x': 1, 'y': 2}, ['x'], ['y'])

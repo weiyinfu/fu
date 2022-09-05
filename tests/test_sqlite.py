@@ -1,8 +1,8 @@
-from unittest import TestCase
-from fu import sqlite_util as d
-from fu import sqlite_kv as kv
 import os
 from typing import List, Iterable
+from unittest import TestCase
+
+from fu import sqlite_util as d
 from fu.dict_obj import DictObj
 
 
@@ -56,3 +56,6 @@ class TestSqlite(TestCase):
         print(type(tuple()))
         print(tuple() is Iterable)
         print(isinstance(tuple(), Iterable))
+
+    def test_update(self):
+        pass

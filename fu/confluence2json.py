@@ -14,7 +14,7 @@ import json
 import os
 
 import pyquery as pq
-from tqdm import tqdm
+from tqdm.autonotebook import tqdm
 
 
 def parse(file: str):

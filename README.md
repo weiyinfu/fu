@@ -3,3 +3,4 @@
 1. `git clone `，`pip install .`，使用`python setup.py install`会产生一堆没用的build文件。  
 2. `pip install git+https://github.com/weiyinfu/fu`
 
+快速安装：python setup.py install
