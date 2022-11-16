@@ -9,7 +9,17 @@ def get_branches(folder: str):
     x = sp.check_output("git branch", shell=True, cwd=folder)
     x = str(x, encoding='utf8')
     a = x.splitlines()
-    return [x.strip().strip('*').strip() for x in a]
+    branches = []
+    current = ''
+    for i in a:
+        line = i.strip()
+        if line.startswith('*'):
+            current = line.strip('*').strip()
+        else:
+            branches.append(line)
+    if not current:
+        return []
+    return [current] + branches
 
 
 def get_current_branch(folder: str):
@@ -49,5 +59,5 @@ def get_repos(github_token: str) -> List[dict]:
 
 
 if __name__ == '__main__':
-    res = get_repos()
+    res = get_repos('')
     print(len(res))

@@ -32,3 +32,13 @@ def reverse_1vn(one2many):
         for j in one2many[i]:
             a[j] = i
     return a
+
+
+def obj2dict(obj):
+    ma = {}
+    for i in dir(obj):
+        x = getattr(obj, i)
+        if not callable(x):
+            if not i.startswith('_'):
+                ma[i] = x
+    return ma

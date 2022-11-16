@@ -57,6 +57,8 @@ def select_one(conn: sqlite3.Connection, sql: str, args: Iterable = tuple()):
     :return:
     """
     li = select_list(conn, sql, args)
+    if len(li) == 0:
+        return None
     if len(li) != 1:
         raise Exception(f"{sql} return result length error :len={len(li)}")
     return li[0]
