@@ -4,3 +4,16 @@ doc/build/
 __pycache__/
 .idea/
 *.iml
+
+package-lock.json
+cmake-build-debug
+yarn.lock
+.DS_Store
+yarn-error.log
+node_modules/
+*.lock
+.pynb_checkpoints
+.pytest_cache
+.vscode/
+fu.egg-info/
+build/
