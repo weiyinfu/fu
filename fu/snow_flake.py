@@ -1,8 +1,14 @@
 import hashlib
 import os
+import re
 import socket
 import threading
 import time
+from typing import Callable
+
+import numpy as np
+
+from fu import time_util
 
 """
 snowflake算法要点： 
@@ -20,10 +26,12 @@ SPACE = 16  # 空间标识符，md5(机器域名+进程ID+线程ID)得到128位�
 ID = 15  # 可用的ID空间
 
 
-def get_worker_id():
-    worker_str = (
-        socket.getfqdn() + str(os.getpid()) + str(threading.current_thread().ident)
-    )
+def default_ip_getter():
+    return socket.getfqdn()
+
+
+def get_worker_id(ip_getter: Callable):
+    worker_str = f"{ip_getter()}{os.getpid()}{threading.current_thread().ident}"
     md5 = hashlib.md5()
     md5.update(bytes(worker_str, "utf8"))
     res = md5.digest()
@@ -31,10 +39,10 @@ def get_worker_id():
 
 
 class SnowFlake:
-    def __init__(self):
+    def __init__(self, ip_getter=None):
         self.last_time = 0
         self.used = 0
-        self.worker_id = get_worker_id()
+        self.worker_id = get_worker_id(ip_getter if ip_getter else default_ip_getter)
 
     def get_id(self):
         # 时间差部分
@@ -57,3 +65,14 @@ class SnowFlake:
         ans |= self.worker_id << ID
         ans |= id_part
         return ans
+
+
+def gen_log_id():
+    """
+    生成logid
+    """
+    dt = time_util.second2str(time.time())
+    dt = re.sub("[^\d]", "", dt)
+    r = str(np.random.random())
+    r = re.sub("[^\d]", "", r)
+    return f"{dt}00{r}"

@@ -14,3 +14,7 @@ class TestSnowFlake(unittest.TestCase):
         assert len(a) == len(set(a))
         assert type(a[0]) == int
         print(a)
+
+
+def test_gen_logid():
+    print(snow_flake.gen_log_id())
